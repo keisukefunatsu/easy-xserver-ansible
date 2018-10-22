@@ -1,0 +1,14 @@
+- name: update.shをインストール
+  template:
+    src: update.sh.j2
+    dest: ~/bin/update.sh
+    mode: '755'
+
+
+- name: update.sh定期実行用のcron設定をする
+  cron:
+    name: "Update WordPress"
+    hour: "{{ cron_hour }}"
+    minute: "{{ cron_minute }}"
+    state: "{{ 'present' if cron_enable else 'absent' }}"
+    job: ~/bin/update.sh

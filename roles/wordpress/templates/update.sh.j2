@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+{% for item in wordpress_info %}
+  cd ${HOME}/{{ item.domain }}/public_html || exit 1;
+  wp core update --locale=ja
+  wp core language update
+  wp plugin update --all
+  wp theme update --all
+{% endfor %}

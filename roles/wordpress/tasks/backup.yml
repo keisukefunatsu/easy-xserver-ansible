@@ -1,0 +1,14 @@
+- name: backup.shをインストール
+  template:
+    src: backup.sh.j2
+    dest: ~/bin/backup.sh
+    mode: '755'
+
+
+- name: backup.sh自動実行用のcronを設定する
+  cron:
+    name: "Backup WordPress"
+    hour: "{{ cron_hour }}"
+    minute: "{{ cron_minute }}"
+    state: "{{ 'present' if cron_enable else 'absent' }}"
+    job: ~/bin/backup.sh

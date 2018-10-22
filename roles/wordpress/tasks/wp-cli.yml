@@ -1,0 +1,37 @@
+- name: binフォルダを作成
+  file:
+    path: ~/bin
+    state: directory
+
+- name: wp-cliをインストールする
+  get_url:
+    url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    dest: ~/bin/wp
+    mode: "0755"
+
+- name: WP CLIのパスを通す
+  lineinfile:
+    path: ~/.bashrc
+    line: PATH=$PATH:~/bin/
+
+- name: bashrcを読み込み
+  shell: source ~/.bashrc
+
+- name: wp-cliの情報をwp_info_resultに格納する
+  command: "wp --info"
+  register: wp_info_result
+
+- name: wp-cliの情報を出力する
+  debug:
+    msg: "{{ wp_info_result }}"
+
+- name: wp-cliのコンフィグファイルを格納するフォルダを作成
+  file:
+    path: ~/.wp-cli
+    state: directory
+
+- name: wp-cliのコンフィグファイルを作成（作るだけ）
+  file:
+    path: ~/.wp-cli/config.yml
+    state: touch
+    mode: "755"

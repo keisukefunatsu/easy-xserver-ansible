@@ -1,0 +1,7 @@
+- name:
+  hosts: xserver
+  become: no
+  vars_files:
+    - config.yml
+  roles:
+    - role: wordpress

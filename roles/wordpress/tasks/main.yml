@@ -1,0 +1,17 @@
+# - name: WP-CLIをセットアップする
+#   import_tasks: wp-cli.yml
+#
+# - name: WordPress環境を作成する
+#   include_tasks: setup.yml
+#   with_items: "{{ wordpress_info }}"
+#
+# - name: テストデータを導入する
+#   include_tasks: import_test_data.yml
+#   with_items: "{{ wordpress_info }}"
+#   when: item.test_data
+
+- name: バックアップスクリプトをインストール、設定する
+  import_tasks: backup.yml
+
+- name: アップデートスクリプトをインストール、設定する
+  import_tasks: update.yml

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+BACKUP_DIR=${HOME}/wp_backup
+BACKUP_DATE=$(date +"%Y%m%d")
+BACKUP_TIME=$(date +"%H%M%S")
+BACKUP_DATETIME="${BACKUP_DATE}_${BACKUP_TIME}"
+
+{% for item in wordpress_info %}
+
+  # 階層的にbackupフォルダを作成
+  mkdir -p ${BACKUP_DIR}/{{ item.domain }}
+  # backup用のディレクトリがなければ終了
+  cd ${BACKUP_DIR}/{{ item.domain }} || exit 1;
+
+  # ディレクトリがあれば処理をする
+  cd ${HOME}/{{ item.domain }}/public_html || exit 1;
+  # DBをバックアップする
+  wp db export ${BACKUP_DIR}/{{ item.domain }}/backup_${BACKUP_DATETIME}.sql
+  # 5日前のバックアップを削除
+  find ${BACKUP_DIR}/{{ item.domain }} -type f -name "*.sql" -mtime +5 -print0 | xargs rm -f
+
+  # uploadsの中身をバックアップする
+  cd ${HOME}/{{ item.domain }}/public_html/wp-content || exit 1;
+  tar vcfz ${BACKUP_DIR}/{{ item.domain }}/uploads_${BACKUP_DATETIME}.tar.gz ./uploads/*
+  find ${BACKUP_DIR}/{{ item.domain }} -type f -name "*.tar.gz" -mtime +5 -print0 | xargs rm -f
+
+{% endfor %}

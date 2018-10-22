@@ -1,0 +1,16 @@
+- name: 共通プラグインをインストールする
+  command: "wp plugin install {{ plugin }} --activate"
+  args:
+    chdir: "{{ working_directory }}"
+  with_items: "{{ common_plugins }}"
+  # ネストしたループ内でのitem変数の名前が重複するのを避ける
+  loop_control:
+    loop_var: plugin
+
+- name: 環境独自のプラグインをインストールする
+  command: "wp plugin install {{ plugin }} --activate"
+  args:
+    chdir: "{{ working_directory }}"
+  with_items: "{{ plugins }}"
+  loop_control:
+    loop_var: plugin

@@ -1,0 +1,93 @@
+# 共通の設定
+# さくらのレンサバのFTPパスを入力します。
+sakura_ssh_pass: "enter-ftp_pass"
+sakura_host_name: "username.sakura.ne.jp"
+sakura_user_name: "enter_sakura_user_name"
+
+# データベース作成時に設定した値を入力します。
+sakura_db_host: "mysqlxxx.db.sakura.ne.jp"
+sakura_db_password: "enter_sakura_db_password"
+
+# cronの実行時間を設定
+# この設定の場合、毎日0:30に実行される
+cron_hour: 0
+cron_minute: 30
+# cronを設定する場合はtrue 必要ない場合はfalse
+cron_enable: true
+
+# WordPressの変数を設定
+# 辞書配列として同様に設定を追加していけばサイトが作成されます。
+wordpress_info:
+    # 環境名など
+  - setting_name: "本番環境"
+    # WordPressをインストールするディレクトリ
+    directory: "production"
+    # さくらの管理画面で設定したデータベース名
+    db_name: "user_name_production"
+    # テーブルの接頭辞
+    db_prefix: "wp_production_"
+    # 管理者のユーザ名
+    admin_user_name: "enter_admin_name"
+    # 管理者のパスワード
+    admin_password: "enter_admin_password"
+    # 管理者のメールアドレス
+    admin_mail: "test@example.com"
+    # サイトのURL
+    site_url: "http://user_name.sakura.ne.jp/production"
+    # サイトのタイトル
+    site_title: "WordPress　demo site production"
+    # wp-config.phpに追記される文字列
+    extra_php: |
+      define( 'WP_DEBUG', false );
+      define( 'WP_DEBUG_LOG', false );
+      define( 'DISALLOW_FILE_EDIT',true );
+    # テストデータを挿入する場合は true そうでない場合はfalse
+    test_data: false
+    # サイトURLを変更した際にwp search-replaceを実行する場合はtrue、しない場合はfalse
+    search_replace: false
+    # 環境にいれるプラグインを設定
+    plugins:
+      - show-current-template
+
+  # - setting_name: "ステージング環境"
+  #   directory: "staging"
+  #   db_name: "user_name_staging"
+  #   db_prefix: "wp_staging_"
+  #   admin_user_name: "enter_admin_name"
+  #   admin_password: "enter_admin_password"
+  #   admin_mail: "test@example.com"
+  #   site_url: "http://user_name.sakura.ne.jp/staging"
+  #   site_title: "WordPress　demo site staging"
+  #   extra_php: |
+  #     define( 'WP_DEBUG', true );
+  #     define( 'WP_DEBUG_LOG', true );
+  #     define( 'DISALLOW_FILE_EDIT',true );
+  #   test_data: false
+  #   plugins:
+  #     - show-current-template
+
+
+
+# 本番、ステージング両方の環境に入るプラグイン
+common_plugins:
+  # セキュリティ関連
+  - all-in-one-wp-security-and-firewall
+  - walti
+  # 問い合わせ関連
+  - contact-form-7
+  - flamingo
+  - cf7-invisible-recaptcha
+  - wp-mail-smtp
+  # SEO関連
+  - google-sitemap-generator
+  - all-in-one-seo-pack
+  # その他おすすめ
+  - tinymce-advanced
+  - wp-multibyte-patch
+  - wp-total-hacks
+  - broken-link-checker
+  - all-in-one-wp-migration
+  - sakura-rs-wp-ssl
+
+  # 動作未確認だが有用そう
+  # - ip-geo-block

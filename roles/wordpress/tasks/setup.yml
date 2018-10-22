@@ -1,0 +1,66 @@
+- name: どの環境を作成するか表示
+  debug:
+    msg: "{{ item.setting_name }}を作成します"
+    
+- name: デフォルトのindex.htmlを削除する
+  file:
+    path: "~/{{ item.domain }}/public_html/index.html"
+    state: absent
+
+- name: WordPress日本語版をダウンロードする
+  command: "wp core download --locale=ja"
+  args:
+    chdir: "~/{{ item.domain }}/public_html"
+    creates: index.php
+
+- name: wp-config.phpを作成する
+  command: |
+    wp config create
+    --dbname={{ item.db_name }}
+    --dbuser={{ xserver_db_user }}
+    --dbpass={{ xserver_db_password }}
+    --dbhost={{ xserver_db_host }}
+    --dbprefix={{ item.db_prefix | default('wp_') }}
+    --extra-php="{{ item.extra_php }}"
+  args:
+    chdir: "~/{{ item.domain }}/public_html"
+    creates: wp-config.php
+
+- name: WordPressをインストールする
+  command: |
+    wp core install
+    --url='{{ item.site_url }}'
+    --title='{{ item.site_title }}'
+    --admin_user='{{ item.admin_user_name }}'
+    --admin_password='{{ item.admin_password }}'
+    --admin_email='{{ item.admin_mail }}'
+  args:
+    chdir: "~/{{ item.domain }}/public_html"
+
+- name: プラグインをインストールする
+  include_tasks: plugins.yml
+  vars:
+    working_directory: "~/{{ item.domain }}/public_html"
+    plugins: "{{ item.plugins }}"
+
+- name: 現在のサイトURLを取得して格納する
+  command: wp option get siteurl
+  args:
+    chdir: "~/{{ item.domain }}/public_html"
+  register: old_site_url
+
+- name: config.ymlのサイトURLが取得したものと異なっていれば置換する
+  command: "wp search-replace {{ old_site_url.stdout }} {{ item.site_url }}"
+  args:
+    chdir: "~/{{ item.domain }}/public_html"
+  when: old_site_url.stdout != item.site_url and old_site_url.rc == 0 and item.search_replace
+
+- name: パーマリンク設定を更新する
+  command: wp rewrite flush
+  args:
+    chdir: "~/{{ item.domain }}/public_html"
+
+- name: パーマリンク構造を変更
+  command: wp rewrite structure '/%postname%/'
+  args:
+    chdir: "~/{{ item.domain }}/public_html"

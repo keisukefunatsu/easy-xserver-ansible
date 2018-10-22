@@ -1,0 +1,32 @@
+- name: テストデータで作成されたユーザが存在しているかチェックしてresultに格納
+  shell: wp user list | grep miya@example.com
+  args:
+    chdir: "~/{{ item.domain }}/public_html"
+  register: result
+  failed_when: result.rc not in [0, 1]
+
+- name: tmpディレクトリを作成
+  file:
+    path: ~/tmp
+    state: directory
+
+- name: WordPressのテストデータをダウンロード
+  get_url:
+    url: https://raw.githubusercontent.com/jawordpressorg/theme-test-data-ja/master/wordpress-theme-test-date-ja.xml
+    dest: ~/tmp/wordpress_test_data.xml
+
+- name: テストデータ導入のためにWordPress importer プラグインを導入する
+  command: "wp plugin install wordpress-importer --activate"
+  args:
+    chdir: "~/{{ item.domain }}/public_html"
+
+- name: WordPress test dataをインポートする
+  command: "wp import ~/tmp/wordpress_test_data.xml --authors=create"
+  args:
+    chdir: "~/{{ item.domain }}/public_html"
+  when: result.rc == 1
+
+# - name: ダウンロードしたテストデータを削除する
+#   file:
+#     path: ~/tmp/wordpress_test_data.xml
+#     state: absent
