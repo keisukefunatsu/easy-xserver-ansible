@@ -34,6 +34,13 @@ homebrew で ansible をインストールしてください
 
 - `brew install ansible`
 
+## Xserverの設定
+- xserver_host_name: "username.xsrv.jp"
+- xserver_user_name: "username"
+- xserver_db_host: "mysqlxxxx.xserver.jp"
+- xserver_db_user: "db_user_name_here"
+- xserver_db_password: "db_password_here"
+- ssh_key_file_path: "~/.ssh/id_rsa"
 
 **この設定の場合、毎日0:30に実行される**
 - `cron_hour`: cronの実行時間を設定します。例）0

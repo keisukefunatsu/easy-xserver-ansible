@@ -1,12 +1,10 @@
 # 共通の設定
-# さくらのレンサバのFTPパスを入力します。
-sakura_ssh_pass: "enter-ftp_pass"
-sakura_host_name: "username.sakura.ne.jp"
-sakura_user_name: "enter_sakura_user_name"
-
-# データベース作成時に設定した値を入力します。
-sakura_db_host: "mysqlxxx.db.sakura.ne.jp"
-sakura_db_password: "enter_sakura_db_password"
+xserver_host_name: "username.xsrv.jp"
+xserver_user_name: "username"
+xserver_db_host: "mysqlxxxx.xserver.jp"
+xserver_db_user: "db_user_name_here"
+xserver_db_password: "db_password_here"
+ssh_key_file_path: "~/.ssh/id_rsa"
 
 # cronの実行時間を設定
 # この設定の場合、毎日0:30に実行される
